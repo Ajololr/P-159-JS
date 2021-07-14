@@ -1,0 +1,16 @@
+.button {
+  box-sizing: border-box;
+  width: 30px;
+  height: 30px;
+  border-radius: 100%;
+  background-color: rgb(61, 39, 26);
+  border: 4px solid rgb(102, 66, 47);
+  cursor: pointer;
+  transition: border 100ms;
+  transition: "background-color" 100ms;
+}
+
+.button:active {
+  background-color: rgb(61, 39, 26);
+  border: 6px solid rgb(83, 54, 38);
+}

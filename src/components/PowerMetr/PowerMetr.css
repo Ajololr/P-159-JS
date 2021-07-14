@@ -1,0 +1,23 @@
+.power-metr-wrapper {
+  position: relative;
+  top: 40%;
+  left: 9%;
+  width: 12%;
+}
+
+.power-metr {
+  width: 100%;
+  height: auto;
+}
+
+.power-metr__indicator {
+  position: absolute;
+  height: 25%;
+  width: 2%;
+  background-color: black;
+  left: 45%;
+  top: 38%;
+  transform-origin: bottom;
+  transition: transform 400ms;
+  transform: rotate(-45deg);
+}

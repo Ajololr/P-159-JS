@@ -1,0 +1,8 @@
+.turned-switch {
+  position: absolute;
+  bottom: 15%;
+  right: 24%;
+  width: 5%;
+  height: auto;
+  cursor: pointer;
+}

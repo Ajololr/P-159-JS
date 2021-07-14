@@ -1,18 +1,18 @@
 .spinner {
   box-sizing: border-box;
   background-color: #3c2418;
-  width: 12%;
+  width: 8vmax;
   border-radius: 50%;
-  margin-right: 1%;
+  margin-right: 3.5%;
   object-fit: contain;
   cursor: pointer;
   transition: transform 100ms;
 }
 
 .spinner:nth-of-type(n + 3) {
-  margin-right: 2%;
+  margin-right: 2vmax;
 }
 
 .spinner:nth-of-type(2) {
-  margin-right: 2%;
+  margin-right: 2vmax;
 }

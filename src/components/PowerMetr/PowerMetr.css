@@ -12,11 +12,11 @@
 
 .power-metr__indicator {
   position: absolute;
-  height: 25%;
+  height: 22%;
   width: 2%;
   background-color: black;
   left: 45%;
-  top: 38%;
+  top: 34%;
   transform-origin: bottom;
   transition: transform 400ms;
   transform: rotate(-45deg);

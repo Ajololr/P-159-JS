@@ -11,6 +11,7 @@ import PowerMetr from "./components/PowerMetr/PowerMetr";
 import PowerSwitch from "./components/PowerSwitch/PowerSwitch";
 import Micro from "./components/Micro/Micro";
 import Antenna from "./components/Antenna/Antenna";
+import Controls from "./components/Controls/Controls";
 
 let socket =
   process.env.NODE_ENV === "production"
@@ -113,10 +114,12 @@ function App() {
               if (isBeep.current) {
                 stopBeep();
               } else {
-                const audioBlob = new Blob(Array(stream.audioChunks));
-                const audioUrl = URL.createObjectURL(audioBlob);
-                const audio = new Audio(audioUrl);
-                await audio.play();
+                if (!isBroadcasting.current) {
+                  const audioBlob = new Blob(Array(stream.audioChunks));
+                  const audioUrl = URL.createObjectURL(audioBlob);
+                  const audio = new Audio(audioUrl);
+                  await audio.play();
+                }
               }
             }
           } catch {}
@@ -222,6 +225,12 @@ function App() {
         <MicroContext.Provider value={{ micro, setMicro }}>
           <AntennaContext.Provider value={{ antenna, setAntenna }}>
             <div className="wrapper">
+              <Controls
+                onTouchStart={isBroadcastingBeep}
+                onTouchEnd={isNotBroadcastingBeep}
+                onMouseDown={isBroadcastingBeep}
+                onMouseUp={isNotBroadcastingBeep}
+              />
               <div className="station">
                 <div className="spinners_list">
                   {spinnersControllsArray.map((control, index) => (

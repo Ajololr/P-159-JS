@@ -24,7 +24,6 @@
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
-  overflow: hidden;
 }
 
 .buttons {
@@ -35,11 +34,4 @@
   flex-direction: row;
   bottom: 19%;
   right: 12%;
-}
-
-.dist_control_img {
-  position: absolute;
-  left: 26%;
-  bottom: 10%;
-  height: 10%;
 }

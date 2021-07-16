@@ -1,0 +1,65 @@
+.klemm-line-container {
+  position: absolute;
+  left: 23.5%;
+  bottom: 5%;
+  width: 12%;
+  cursor: pointer;
+}
+
+.klemm-line {
+  width: 100%;
+  height: auto;
+}
+
+.key-fork {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 63%;
+  border-radius: 20px;
+  background-color: rgb(60, 60, 60);
+  transform: scale(0);
+  transition: transform 200ms;
+  z-index: 2;
+}
+
+.key-fork__visible {
+  transform: scale(1);
+}
+
+.key-container {
+  position: absolute;
+  top: -50%;
+  left: 110%;
+  transition: transform 200ms;
+  transform: translateY(300%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.key-container__visible {
+  transform: translateY(0);
+}
+
+.key-block {
+  width: 15.5vmax;
+  height: 15vmax;
+  background-color: rgb(196, 90, 14);
+  border-radius: 5px;
+}
+
+.key-long {
+  width: 4vmax;
+  height: 7vmax;
+  background-color: rgb(30, 30, 30);
+}
+
+.key-button {
+  position: relative;
+  bottom: 3vmax;
+  width: 6vmax;
+  height: 6vmax;
+  border-radius: 50%;
+  background-color: rgb(50, 50, 50);
+}

@@ -1,0 +1,21 @@
+.TA-57-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100%;
+}
+
+.TA-57-img {
+  width: 100%;
+  height: auto;
+}
+
+.TA-57-pressable {
+  position: absolute;
+  right: 17vmax;
+  bottom: 35%;
+  width: 5vmax;
+  height: 13vmax;
+  cursor: pointer;
+}

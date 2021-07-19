@@ -35,3 +35,12 @@
   bottom: 19%;
   right: 12%;
 }
+
+.switch-ta-57-view-button {
+  position: absolute;
+  bottom: 2%;
+  right: 2%;
+  font-size: 3vmax;
+  border-radius: 10px;
+  z-index: 2;
+}

@@ -6,13 +6,12 @@ import "./App.css";
 import { Spinner } from "./components/spiner/spiner";
 import { Button } from "./components/button/button";
 import { TranseferTypeSwitch } from "./components/transeferTypeSwitch/transeferTypeSwitch";
-import DistConrolImg from "./assets/images/dist-controll.png";
 import PowerMetr from "./components/PowerMetr/PowerMetr";
 import PowerSwitch from "./components/PowerSwitch/PowerSwitch";
 import Micro from "./components/Micro/Micro";
 import Antenna from "./components/Antenna/Antenna";
-import Controls from "./components/Controls/Controls";
 import TlgKlemmKey from "./components/TlgKlemmKey/TlgKlemmKey";
+import TA57 from "./components/TA57/TA57";
 
 let socket =
   process.env.NODE_ENV === "production"
@@ -67,15 +66,21 @@ export const AntennaContext = createContext();
 
 export const TlgKeyContext = createContext();
 
+export const IsTransferingContext = createContext();
+
+export const IsTAVisibleContext = createContext();
+
 function App() {
-  const [transferType, setTransferType] = useState(TransferType.tlg);
+  const [transferType, setTransferType] = useState(TransferType.tlf);
   const [power, setPower] = useState(PowerType.off);
   const prevPower = useRef(power);
   const [micro, setMicro] = useState(false);
   const [antenna, setAntenna] = useState(false);
   const [tlgKey, setTlgKey] = useState(false);
+  const [isTaVisible, setIsTaVisible] = useState(false);
   const [selectedFreq, setSelectedFreq] = useState("30000");
   const [workingFreq, setWorkingFreq] = useState(Math.random());
+  const [isTransfering, setIsTransfering] = useState(false);
 
   const isBroadcasting = useRef(false);
   const isBeep = useRef(false);
@@ -105,7 +110,7 @@ function App() {
   });
 
   const onStreamHandler = async (stream) => {
-    if (!isBroadcasting.current && power === PowerType.on && antenna) {
+    if (!isBroadcasting.current && power === PowerType.on && antenna && micro) {
       if (stream.frequency === workingFreq)
         try {
           if (stream.beep && transferType === TransferType.tlg) {
@@ -123,7 +128,8 @@ function App() {
           if (
             !stream.beep &&
             (transferType === TransferType.tlf ||
-              transferType === TransferType.tlfPh)
+              transferType === TransferType.tlfPh ||
+              transferType === TransferType.du)
           ) {
             if (isBeep.current) {
               stopBeep();
@@ -149,6 +155,8 @@ function App() {
     beep.current.pause();
     beep.current.currentTime = 0;
     isBeep.current = false;
+
+    setIsTransfering(false);
   };
 
   const broadcastingHandler = () => {
@@ -156,32 +164,39 @@ function App() {
       antenna &&
       micro &&
       power === PowerType.on &&
-      (transferType === TransferType.tlf || transferType === TransferType.tlfPh)
+      (transferType === TransferType.tlf ||
+        transferType === TransferType.tlfPh ||
+        transferType === TransferType.du)
     ) {
       if (isBeep.current) stopBeep();
       isBroadcasting.current = true;
+      setIsTransfering(true);
       broadcasting();
     }
   };
 
   function isNotBroadcasting() {
     isBroadcasting.current = false;
+    setIsTransfering(false);
   }
 
   function isBroadcastingBeep() {
     if (
       antenna &&
       power === PowerType.on &&
-      transferType === TransferType.tlg
+      transferType === TransferType.tlg &&
+      micro
     ) {
       if (isBeep.current) stopBeep();
       isBroadcasting.current = true;
+      setIsTransfering(true);
       broadcastingBeep();
     }
   }
 
   function isNotBroadcastingBeep() {
     isBroadcasting.current = false;
+    setIsTransfering(false);
   }
 
   const broadcasting = () => {
@@ -238,7 +253,9 @@ function App() {
         };
 
         const stop = () => {
-          mediaRecorder.stop();
+          if (mediaRecorder.state !== "inactive") {
+            mediaRecorder.stop();
+          }
         };
 
         resolve({ start, stop });
@@ -254,54 +271,79 @@ function App() {
         <MicroContext.Provider value={{ micro, setMicro }}>
           <AntennaContext.Provider value={{ antenna, setAntenna }}>
             <TlgKeyContext.Provider value={{ tlgKey, setTlgKey }}>
-              <div className="wrapper" ref={wrapperRef}>
-                <div className="station">
-                  <div className="spinners_list">
-                    {spinnersControllsArray.map((control, index) => (
-                      <Spinner
-                        key={index}
-                        min={control.min}
-                        max={control.max}
-                        onChange={(value) => {
-                          setSelectedFreq(
-                            selectedFreq.slice(0, index) +
-                              value.toString() +
-                              selectedFreq.slice(index + 1)
-                          );
-                        }}
-                      />
-                    ))}
-                  </div>
-                  <TranseferTypeSwitch selected={transferType} />
-                  <div className="buttons">
-                    <Button
+              <IsTransferingContext.Provider
+                value={{ isTransfering, setIsTransfering }}
+              >
+                <IsTAVisibleContext.Provider
+                  value={{ isTaVisible, setIsTaVisible }}
+                >
+                  {transferType === TransferType.du && (
+                    <button
+                      className="switch-ta-57-view-button"
+                      onClick={() => setIsTaVisible(!isTaVisible)}
+                    >
+                      {isTaVisible ? "К Р-159" : "К ТА-57"}
+                    </button>
+                  )}
+                  {isTaVisible ? (
+                    <TA57
                       onTouchStart={broadcastingHandler}
                       onTouchEnd={isNotBroadcasting}
                       onMouseDown={broadcastingHandler}
                       onMouseUp={isNotBroadcasting}
                     />
-                    <Button
-                      onTouchStart={freqSettingStartedHandler}
-                      onTouchEnd={freqSettingEndedHandler}
-                      onMouseDown={freqSettingStartedHandler}
-                      onMouseUp={freqSettingEndedHandler}
-                    />
-                  </div>
-                  <PowerMetr />
-                  <PowerSwitch />
-                  <Micro />
-                  <Antenna />
-                  <TlgKlemmKey
-                    wrapperRef={wrapperRef}
-                    onTouchStart={isBroadcastingBeep}
-                    onTouchEnd={isNotBroadcastingBeep}
-                    onMouseDown={isBroadcastingBeep}
-                    onMouseUp={isNotBroadcastingBeep}
-                    onClick={stopPropagation}
-                  />
-                  <audio src={"/beep.mp3"} ref={beep} />
-                </div>
-              </div>
+                  ) : (
+                    <div className="wrapper" ref={wrapperRef}>
+                      <div className="station">
+                        <div className="spinners_list">
+                          {spinnersControllsArray.map((control, index) => (
+                            <Spinner
+                              key={index}
+                              min={control.min}
+                              max={control.max}
+                              onChange={(value) => {
+                                setSelectedFreq(
+                                  selectedFreq.slice(0, index) +
+                                    value.toString() +
+                                    selectedFreq.slice(index + 1)
+                                );
+                              }}
+                            />
+                          ))}
+                        </div>
+                        <TranseferTypeSwitch selected={transferType} />
+                        <div className="buttons">
+                          <Button
+                            onTouchStart={broadcastingHandler}
+                            onTouchEnd={isNotBroadcasting}
+                            onMouseDown={broadcastingHandler}
+                            onMouseUp={isNotBroadcasting}
+                          />
+                          <Button
+                            onTouchStart={freqSettingStartedHandler}
+                            onTouchEnd={freqSettingEndedHandler}
+                            onMouseDown={freqSettingStartedHandler}
+                            onMouseUp={freqSettingEndedHandler}
+                          />
+                        </div>
+                        <PowerMetr />
+                        <PowerSwitch />
+                        <Micro />
+                        <Antenna />
+                        <TlgKlemmKey
+                          wrapperRef={wrapperRef}
+                          onTouchStart={isBroadcastingBeep}
+                          onTouchEnd={isNotBroadcastingBeep}
+                          onMouseDown={isBroadcastingBeep}
+                          onMouseUp={isNotBroadcastingBeep}
+                          onClick={stopPropagation}
+                        />
+                        <audio src={"/beep.mp3"} ref={beep} />
+                      </div>
+                    </div>
+                  )}{" "}
+                </IsTAVisibleContext.Provider>
+              </IsTransferingContext.Provider>
             </TlgKeyContext.Provider>
           </AntennaContext.Provider>
         </MicroContext.Provider>

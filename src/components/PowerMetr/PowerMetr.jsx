@@ -1,27 +1,27 @@
 import React, { useContext } from "react";
 
-import { PowerContext, PowerType } from "../../App";
+import { IsTransferingContext, PowerContext, PowerType } from "../../App";
 
 import PowerMetrImg from "../../assets/images/power-metr.png";
 
 import "./PowerMetr.css";
 
-const PowerMetr = () => {
+const PowerMetr = ({}) => {
   const { power } = useContext(PowerContext);
+  const { isTransfering } = useContext(IsTransferingContext);
 
   let rotation;
-
   switch (power) {
     case PowerType.off:
       rotation = "-45deg";
       break;
 
     case PowerType.on:
-      rotation = "10deg";
+      rotation = isTransfering ? "15deg" : "-20deg";
       break;
 
     case PowerType.setting:
-      rotation = "50deg";
+      rotation = "45deg";
       break;
 
     default:

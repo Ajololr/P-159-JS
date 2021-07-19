@@ -19,7 +19,9 @@ const TlgKlemmKey = ({ wrapperRef, ...otherProps }) => {
   return (
     <div className="klemm-line-container" onClick={clickHandler}>
       <img className="klemm-line" src={TlgKlemmImg} />
-      <div className={`key-fork ${tlgKey ? "key-fork__visible" : ""}`} />
+      <div className={`key-fork ${tlgKey ? "key-fork__visible" : ""}`}>
+        <div className="cable" />
+      </div>
       <div
         className={`key-container ${tlgKey ? "key-container__visible" : ""}`}
       >

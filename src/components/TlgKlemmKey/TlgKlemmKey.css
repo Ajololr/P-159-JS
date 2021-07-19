@@ -20,7 +20,18 @@
   background-color: rgb(50, 50, 50);
   transform: scale(0);
   transition: transform 200ms;
-  z-index: 2;
+  z-index: 1;
+}
+
+.cable {
+  width: 70%;
+  height: 30%;
+  left: 40%;
+  background-color: gray;
+  position: absolute;
+  top: 35%;
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
 }
 
 .key-fork__visible {

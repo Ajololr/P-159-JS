@@ -75,7 +75,7 @@ function App() {
   const [antenna, setAntenna] = useState(false);
   const [tlgKey, setTlgKey] = useState(false);
   const [selectedFreq, setSelectedFreq] = useState("30000");
-  const [workingFreq, setWorkingFreq] = useState("30000");
+  const [workingFreq, setWorkingFreq] = useState(Math.random());
 
   const isBroadcasting = useRef(false);
   const isBeep = useRef(false);
@@ -111,8 +111,6 @@ function App() {
           if (stream.beep && transferType === TransferType.tlg) {
             if (!isBeep.current) {
               beep.current.currentTime = 0.2;
-              console.log(transferType);
-              console.log("play");
               await beep.current.play();
               isBeep.current = true;
             } else {

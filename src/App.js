@@ -83,6 +83,8 @@ function App() {
 
   const beep = useRef();
 
+  const wrapperRef = useRef();
+
   const freqSettingStartedHandler = () => {
     prevPower.current = power;
     if (power === PowerType.on) {
@@ -246,19 +248,15 @@ function App() {
     });
   };
 
+  const stopPropagation = (e) => e.stopPropagation();
+
   return (
     <TransferTypeContext.Provider value={{ transferType, setTransferType }}>
       <PowerContext.Provider value={{ power, setPower }}>
         <MicroContext.Provider value={{ micro, setMicro }}>
           <AntennaContext.Provider value={{ antenna, setAntenna }}>
             <TlgKeyContext.Provider value={{ tlgKey, setTlgKey }}>
-              <div className="wrapper">
-                <Controls
-                  onTouchStart={isBroadcastingBeep}
-                  onTouchEnd={isNotBroadcastingBeep}
-                  onMouseDown={isBroadcastingBeep}
-                  onMouseUp={isNotBroadcastingBeep}
-                />
+              <div className="wrapper" ref={wrapperRef}>
                 <div className="station">
                   <div className="spinners_list">
                     {spinnersControllsArray.map((control, index) => (
@@ -295,7 +293,14 @@ function App() {
                   <PowerSwitch />
                   <Micro />
                   <Antenna />
-                  <TlgKlemmKey />
+                  <TlgKlemmKey
+                    wrapperRef={wrapperRef}
+                    onTouchStart={isBroadcastingBeep}
+                    onTouchEnd={isNotBroadcastingBeep}
+                    onMouseDown={isBroadcastingBeep}
+                    onMouseUp={isNotBroadcastingBeep}
+                    onClick={stopPropagation}
+                  />
                   <audio src={"/beep.mp3"} ref={beep} />
                 </div>
               </div>

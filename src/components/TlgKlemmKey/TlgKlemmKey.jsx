@@ -1,16 +1,20 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 
 import TlgKlemmImg from "../../assets/images/klemm-line.png";
 
 import "./TlgKlemmKey.css";
 import { TlgKeyContext } from "../../App";
 
-const TlgKlemmKey = () => {
+const TlgKlemmKey = ({ wrapperRef, ...otherProps }) => {
   const { tlgKey, setTlgKey } = useContext(TlgKeyContext);
 
   const clickHandler = () => {
     setTlgKey(!tlgKey);
   };
+
+  useEffect(() => {
+    wrapperRef.current.style.overflowY = tlgKey ? "scroll" : "hidden";
+  }, [wrapperRef, tlgKey]);
 
   return (
     <div className="klemm-line-container" onClick={clickHandler}>
@@ -21,7 +25,7 @@ const TlgKlemmKey = () => {
       >
         <div className="key-block" />
         <div className="key-long" />
-        <div className="key-button" />
+        <div className="key-button" {...otherProps} />
       </div>
     </div>
   );

@@ -7,7 +7,7 @@ import "./TA57.css";
 function TA57({ ...otherProps }) {
   return (
     <div className="TA-57-container">
-      <img src={TA57Img} className="TA-57-img" />
+      <img src={TA57Img} className="TA-57-img" alt="TA-57" />
       <div className="TA-57-phone-container">
         <div className="TA-57-phone-circle-big">
           <div className="TA-57-phone-circle-small" />

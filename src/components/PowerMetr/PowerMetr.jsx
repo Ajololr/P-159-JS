@@ -6,7 +6,7 @@ import PowerMetrImg from "../../assets/images/power-metr.png";
 
 import "./PowerMetr.css";
 
-const PowerMetr = ({}) => {
+const PowerMetr = () => {
   const { power } = useContext(PowerContext);
   const { isTransfering } = useContext(IsTransferingContext);
 

@@ -58,7 +58,7 @@ const TlgKlemmKey = ({ wrapperRef, ...otherProps }) => {
   return (
     <>
       <div className="klemm-line-container" onClick={klemmClickHandler}>
-        <img className="klemm-line" src={TlgKlemmImg} />
+        <img className="klemm-line" src={TlgKlemmImg} alt="klemm line" />
         <div className={`key-fork ${tlgKey ? "key-fork__visible" : ""}`}>
           <div className="cable" />
         </div>

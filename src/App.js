@@ -70,6 +70,8 @@ export const IsTransferingContext = createContext();
 
 export const IsTAVisibleContext = createContext();
 
+export const IsTA57ConnectedContext = createContext();
+
 function App() {
   const [transferType, setTransferType] = useState(TransferType.tlf);
   const [power, setPower] = useState(PowerType.off);
@@ -78,6 +80,7 @@ function App() {
   const [antenna, setAntenna] = useState(false);
   const [tlgKey, setTlgKey] = useState(false);
   const [isTaVisible, setIsTaVisible] = useState(false);
+  const [isTa57Connected, setTa57Connected] = useState(false);
   const [selectedFreq, setSelectedFreq] = useState("30000");
   const [workingFreq, setWorkingFreq] = useState(Math.random());
   const [isTransfering, setIsTransfering] = useState(false);
@@ -129,7 +132,7 @@ function App() {
             !stream.beep &&
             (transferType === TransferType.tlf ||
               transferType === TransferType.tlfPh ||
-              transferType === TransferType.du)
+              (transferType === TransferType.du && isTa57Connected))
           ) {
             if (isBeep.current) {
               stopBeep();
@@ -160,18 +163,26 @@ function App() {
   };
 
   const broadcastingHandler = () => {
-    if (
-      antenna &&
-      micro &&
-      power === PowerType.on &&
-      (transferType === TransferType.tlf ||
-        transferType === TransferType.tlfPh ||
-        transferType === TransferType.du)
-    ) {
+    if (antenna && micro && power === PowerType.on) {
       if (isBeep.current) stopBeep();
       isBroadcasting.current = true;
       setIsTransfering(true);
       broadcasting();
+    }
+  };
+
+  const stationBroadcastHandler = () => {
+    if (
+      transferType === TransferType.tlf ||
+      transferType === TransferType.tlfPh
+    ) {
+      broadcastingHandler();
+    }
+  };
+
+  const ta57BroadcastHandler = () => {
+    if (transferType === TransferType.du && isTa57Connected) {
+      broadcastingHandler();
     }
   };
 
@@ -277,71 +288,75 @@ function App() {
                 <IsTAVisibleContext.Provider
                   value={{ isTaVisible, setIsTaVisible }}
                 >
-                  {transferType === TransferType.du && (
-                    <button
-                      className="switch-ta-57-view-button"
-                      onClick={() => setIsTaVisible(!isTaVisible)}
-                    >
-                      {isTaVisible ? "К Р-159" : "К ТА-57"}
-                    </button>
-                  )}
-                  {isTaVisible ? (
-                    <TA57
-                      onTouchStart={broadcastingHandler}
-                      onTouchEnd={isNotBroadcasting}
-                      onMouseDown={broadcastingHandler}
-                      onMouseUp={isNotBroadcasting}
-                    />
-                  ) : (
-                    <div className="wrapper" ref={wrapperRef}>
-                      <div className="station">
-                        <div className="spinners_list">
-                          {spinnersControllsArray.map((control, index) => (
-                            <Spinner
-                              key={index}
-                              min={control.min}
-                              max={control.max}
-                              onChange={(value) => {
-                                setSelectedFreq(
-                                  selectedFreq.slice(0, index) +
-                                    value.toString() +
-                                    selectedFreq.slice(index + 1)
-                                );
-                              }}
+                  <IsTA57ConnectedContext.Provider
+                    value={{ isTa57Connected, setTa57Connected }}
+                  >
+                    {isTa57Connected && (
+                      <button
+                        className="switch-ta-57-view-button"
+                        onClick={() => setIsTaVisible(!isTaVisible)}
+                      >
+                        {isTaVisible ? "Перейти к Р-159" : "Перейти к ТА-57"}
+                      </button>
+                    )}
+                    {isTaVisible ? (
+                      <TA57
+                        onTouchStart={ta57BroadcastHandler}
+                        onTouchEnd={isNotBroadcasting}
+                        onMouseDown={ta57BroadcastHandler}
+                        onMouseUp={isNotBroadcasting}
+                      />
+                    ) : (
+                      <div className="wrapper" ref={wrapperRef}>
+                        <div className="station">
+                          <div className="spinners_list">
+                            {spinnersControllsArray.map((control, index) => (
+                              <Spinner
+                                key={index}
+                                min={control.min}
+                                max={control.max}
+                                onChange={(value) => {
+                                  setSelectedFreq(
+                                    selectedFreq.slice(0, index) +
+                                      value.toString() +
+                                      selectedFreq.slice(index + 1)
+                                  );
+                                }}
+                              />
+                            ))}
+                          </div>
+                          <TranseferTypeSwitch selected={transferType} />
+                          <div className="buttons">
+                            <Button
+                              onTouchStart={stationBroadcastHandler}
+                              onTouchEnd={isNotBroadcasting}
+                              onMouseDown={stationBroadcastHandler}
+                              onMouseUp={isNotBroadcasting}
                             />
-                          ))}
-                        </div>
-                        <TranseferTypeSwitch selected={transferType} />
-                        <div className="buttons">
-                          <Button
-                            onTouchStart={broadcastingHandler}
-                            onTouchEnd={isNotBroadcasting}
-                            onMouseDown={broadcastingHandler}
-                            onMouseUp={isNotBroadcasting}
+                            <Button
+                              onTouchStart={freqSettingStartedHandler}
+                              onTouchEnd={freqSettingEndedHandler}
+                              onMouseDown={freqSettingStartedHandler}
+                              onMouseUp={freqSettingEndedHandler}
+                            />
+                          </div>
+                          <PowerMetr />
+                          <PowerSwitch />
+                          <Micro />
+                          <Antenna />
+                          <TlgKlemmKey
+                            wrapperRef={wrapperRef}
+                            onTouchStart={isBroadcastingBeep}
+                            onTouchEnd={isNotBroadcastingBeep}
+                            onMouseDown={isBroadcastingBeep}
+                            onMouseUp={isNotBroadcastingBeep}
+                            onClick={stopPropagation}
                           />
-                          <Button
-                            onTouchStart={freqSettingStartedHandler}
-                            onTouchEnd={freqSettingEndedHandler}
-                            onMouseDown={freqSettingStartedHandler}
-                            onMouseUp={freqSettingEndedHandler}
-                          />
+                          <audio src={"/beep.mp3"} ref={beep} />
                         </div>
-                        <PowerMetr />
-                        <PowerSwitch />
-                        <Micro />
-                        <Antenna />
-                        <TlgKlemmKey
-                          wrapperRef={wrapperRef}
-                          onTouchStart={isBroadcastingBeep}
-                          onTouchEnd={isNotBroadcastingBeep}
-                          onMouseDown={isBroadcastingBeep}
-                          onMouseUp={isNotBroadcastingBeep}
-                          onClick={stopPropagation}
-                        />
-                        <audio src={"/beep.mp3"} ref={beep} />
                       </div>
-                    </div>
-                  )}{" "}
+                    )}
+                  </IsTA57ConnectedContext.Provider>
                 </IsTAVisibleContext.Provider>
               </IsTransferingContext.Provider>
             </TlgKeyContext.Provider>

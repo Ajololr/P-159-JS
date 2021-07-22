@@ -1,35 +1,30 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 
 import TlgKlemmImg from "../../assets/images/klemm-line.png";
 
 import "./TlgKlemmKey.css";
-import { IsTA57ConnectedContext, TlgKeyContext } from "../../App";
+import {
+  IsTA57ConnectedContext,
+  ModalSettingsContext,
+  TlgKeyContext,
+} from "../../App";
 
 const TlgKlemmKey = ({ wrapperRef, ...otherProps }) => {
   const { tlgKey, setTlgKey } = useContext(TlgKeyContext);
+  const { setModalSettings } = useContext(ModalSettingsContext);
   const { isTa57Connected, setTa57Connected } = useContext(
     IsTA57ConnectedContext
   );
 
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const tlgClickHandler = () => {
+    setTlgKey(!tlgKey);
+    setModalSettings({ isVisible: false });
+  };
 
-  const renderModal = () => (
-    <div
-      className={`modal-wrapper ${
-        isModalVisible ? "modal-wrapper_visible" : ""
-      }`}
-    >
-      <div className="modal-window">
-        <h2 className="modal-header">Выберите действие</h2>
-        <button onClick={tlgClickHandler} className="modal-option">
-          Подключить телеграфный ключ
-        </button>
-        <button onClick={ta57ClickHandler} className="modal-option">
-          Подключить ТА-57
-        </button>
-      </div>
-    </div>
-  );
+  const ta57ClickHandler = () => {
+    setTa57Connected(!isTa57Connected);
+    setModalSettings({ isVisible: false });
+  };
 
   const klemmClickHandler = () => {
     if (tlgKey) {
@@ -37,18 +32,18 @@ const TlgKlemmKey = ({ wrapperRef, ...otherProps }) => {
     } else if (isTa57Connected) {
       setTa57Connected(false);
     } else {
-      setIsModalVisible(true);
+      setModalSettings({
+        isVisible: true,
+        title: "Выберите действие",
+        actions: [
+          {
+            onClick: tlgClickHandler,
+            title: "Подключить телеграфный ключ",
+          },
+          { onClick: ta57ClickHandler, title: "Подключить ТА-57" },
+        ],
+      });
     }
-  };
-
-  const tlgClickHandler = () => {
-    setTlgKey(!tlgKey);
-    setIsModalVisible(false);
-  };
-
-  const ta57ClickHandler = () => {
-    setTa57Connected(!isTa57Connected);
-    setIsModalVisible(false);
   };
 
   useEffect(() => {
@@ -75,7 +70,6 @@ const TlgKlemmKey = ({ wrapperRef, ...otherProps }) => {
           <div className="cable-ta" />
         </div>
       </div>
-      {renderModal()}
     </>
   );
 };

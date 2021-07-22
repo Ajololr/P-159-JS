@@ -45,3 +45,13 @@
   z-index: 2;
   padding: 5px;
 }
+
+.switch-unhc-view-button {
+  position: fixed;
+  bottom: 2%;
+  left: 2%;
+  font-size: 2vmax;
+  border-radius: 10px;
+  z-index: 2;
+  padding: 5px;
+}

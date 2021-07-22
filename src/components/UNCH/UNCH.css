@@ -1,0 +1,19 @@
+.unch-wrapper {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow-x: hidden;
+  background-color: #a4abac;
+}
+
+.unch-background {
+  position: relative;
+  width: 100vmax;
+  height: 29.5vmax;
+  background-image: url("../../assets/images/unch-background.jpg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}

@@ -12,6 +12,8 @@ import Micro from "./components/Micro/Micro";
 import Antenna from "./components/Antenna/Antenna";
 import TlgKlemmKey from "./components/TlgKlemmKey/TlgKlemmKey";
 import TA57 from "./components/TA57/TA57";
+import UNCH from "./components/UNCH/UNCH";
+import Modal from "./components/Modal/Modal";
 
 let socket =
   process.env.NODE_ENV === "production"
@@ -68,9 +70,19 @@ export const TlgKeyContext = createContext();
 
 export const IsTransferingContext = createContext();
 
-export const IsTAVisibleContext = createContext();
-
 export const IsTA57ConnectedContext = createContext();
+
+export const IsUNCHConnectedContext = createContext();
+
+export const ModalSettingsContext = createContext();
+
+export const RoutesType = {
+  P159: "P-159",
+  UNCH: "UNCH",
+  TA57: "TA-57",
+};
+
+export const RoutesContext = createContext();
 
 function App() {
   const [transferType, setTransferType] = useState(TransferType.tlf);
@@ -79,11 +91,17 @@ function App() {
   const [micro, setMicro] = useState(false);
   const [antenna, setAntenna] = useState(false);
   const [tlgKey, setTlgKey] = useState(false);
-  const [isTaVisible, setIsTaVisible] = useState(false);
   const [isTa57Connected, setTa57Connected] = useState(false);
+  const [isUNCHConnected, setIsUNCHConnected] = useState(false);
   const [selectedFreq, setSelectedFreq] = useState("30000");
   const [workingFreq, setWorkingFreq] = useState(Math.random());
   const [isTransfering, setIsTransfering] = useState(false);
+  const [modalSettings, setModalSettings] = useState({
+    title: "",
+    actions: [],
+    isVisible: false,
+  });
+  const [route, setRoute] = useState(RoutesType.P159);
 
   const isBroadcasting = useRef(false);
   const isBeep = useRef(false);
@@ -276,6 +294,81 @@ function App() {
 
   const stopPropagation = (e) => e.stopPropagation();
 
+  let component = null;
+  switch (route) {
+    case RoutesType.P159:
+      component = (
+        <div className="wrapper" ref={wrapperRef}>
+          <div className="station">
+            <div className="spinners_list">
+              {spinnersControllsArray.map((control, index) => (
+                <Spinner
+                  key={index}
+                  min={control.min}
+                  max={control.max}
+                  onChange={(value) => {
+                    setSelectedFreq(
+                      selectedFreq.slice(0, index) +
+                        value.toString() +
+                        selectedFreq.slice(index + 1)
+                    );
+                  }}
+                />
+              ))}
+            </div>
+            <TranseferTypeSwitch selected={transferType} />
+            <div className="buttons">
+              <Button
+                onTouchStart={stationBroadcastHandler}
+                onTouchEnd={isNotBroadcasting}
+                onMouseDown={stationBroadcastHandler}
+                onMouseUp={isNotBroadcasting}
+              />
+              <Button
+                onTouchStart={freqSettingStartedHandler}
+                onTouchEnd={freqSettingEndedHandler}
+                onMouseDown={freqSettingStartedHandler}
+                onMouseUp={freqSettingEndedHandler}
+              />
+            </div>
+            <PowerMetr />
+            <PowerSwitch />
+            <Micro />
+            <Antenna />
+            <TlgKlemmKey
+              wrapperRef={wrapperRef}
+              onTouchStart={isBroadcastingBeep}
+              onTouchEnd={isNotBroadcastingBeep}
+              onMouseDown={isBroadcastingBeep}
+              onMouseUp={isNotBroadcastingBeep}
+              onClick={stopPropagation}
+            />
+            <audio src={"/beep.mp3"} ref={beep} />
+          </div>
+        </div>
+      );
+      break;
+
+    case RoutesType.TA57:
+      component = (
+        <TA57
+          onTouchStart={ta57BroadcastHandler}
+          onTouchEnd={isNotBroadcasting}
+          onMouseDown={ta57BroadcastHandler}
+          onMouseUp={isNotBroadcasting}
+        />
+      );
+      break;
+
+    case RoutesType.UNCH:
+      component = <UNCH />;
+      break;
+
+    default:
+      component = null;
+      break;
+  }
+
   return (
     <TransferTypeContext.Provider value={{ transferType, setTransferType }}>
       <PowerContext.Provider value={{ power, setPower }}>
@@ -285,79 +378,54 @@ function App() {
               <IsTransferingContext.Provider
                 value={{ isTransfering, setIsTransfering }}
               >
-                <IsTAVisibleContext.Provider
-                  value={{ isTaVisible, setIsTaVisible }}
+                <IsTA57ConnectedContext.Provider
+                  value={{ isTa57Connected, setTa57Connected }}
                 >
-                  <IsTA57ConnectedContext.Provider
-                    value={{ isTa57Connected, setTa57Connected }}
+                  <ModalSettingsContext.Provider
+                    value={{ modalSettings, setModalSettings }}
                   >
-                    {isTa57Connected && (
-                      <button
-                        className="switch-ta-57-view-button"
-                        onClick={() => setIsTaVisible(!isTaVisible)}
+                    <RoutesContext.Provider value={{ route, setRoute }}>
+                      <IsUNCHConnectedContext.Provider
+                        value={{ isUNCHConnected, setIsUNCHConnected }}
                       >
-                        {isTaVisible ? "Перейти к Р-159" : "Перейти к ТА-57"}
-                      </button>
-                    )}
-                    {isTaVisible ? (
-                      <TA57
-                        onTouchStart={ta57BroadcastHandler}
-                        onTouchEnd={isNotBroadcasting}
-                        onMouseDown={ta57BroadcastHandler}
-                        onMouseUp={isNotBroadcasting}
-                      />
-                    ) : (
-                      <div className="wrapper" ref={wrapperRef}>
-                        <div className="station">
-                          <div className="spinners_list">
-                            {spinnersControllsArray.map((control, index) => (
-                              <Spinner
-                                key={index}
-                                min={control.min}
-                                max={control.max}
-                                onChange={(value) => {
-                                  setSelectedFreq(
-                                    selectedFreq.slice(0, index) +
-                                      value.toString() +
-                                      selectedFreq.slice(index + 1)
-                                  );
-                                }}
-                              />
-                            ))}
-                          </div>
-                          <TranseferTypeSwitch selected={transferType} />
-                          <div className="buttons">
-                            <Button
-                              onTouchStart={stationBroadcastHandler}
-                              onTouchEnd={isNotBroadcasting}
-                              onMouseDown={stationBroadcastHandler}
-                              onMouseUp={isNotBroadcasting}
-                            />
-                            <Button
-                              onTouchStart={freqSettingStartedHandler}
-                              onTouchEnd={freqSettingEndedHandler}
-                              onMouseDown={freqSettingStartedHandler}
-                              onMouseUp={freqSettingEndedHandler}
-                            />
-                          </div>
-                          <PowerMetr />
-                          <PowerSwitch />
-                          <Micro />
-                          <Antenna />
-                          <TlgKlemmKey
-                            wrapperRef={wrapperRef}
-                            onTouchStart={isBroadcastingBeep}
-                            onTouchEnd={isNotBroadcastingBeep}
-                            onMouseDown={isBroadcastingBeep}
-                            onMouseUp={isNotBroadcastingBeep}
-                            onClick={stopPropagation}
-                          />
-                          <audio src={"/beep.mp3"} ref={beep} />
-                        </div>
-                      </div>
-                    )}
-                  </IsTA57ConnectedContext.Provider>
-                </IsTAVisibleContext.Provider>
+                        {component}
+                        {isTa57Connected && (
+                          <button
+                            className="switch-ta-57-view-button"
+                            onClick={() =>
+                              setRoute(
+                                route !== RoutesType.TA57
+                                  ? RoutesType.TA57
+                                  : RoutesType.P159
+                              )
+                            }
+                          >
+                            {route !== RoutesType.TA57
+                              ? "Перейти к ТА-57"
+                              : "Перейти к Р-159"}
+                          </button>
+                        )}
+                        {isUNCHConnected && (
+                          <button
+                            className="switch-unhc-view-button"
+                            onClick={() =>
+                              setRoute(
+                                route !== RoutesType.UNCH
+                                  ? RoutesType.UNCH
+                                  : RoutesType.P159
+                              )
+                            }
+                          >
+                            {route !== RoutesType.UNCH
+                              ? "Перейти к УНЧ"
+                              : "Перейти к Р-159"}
+                          </button>
+                        )}
+                        <Modal />
+                      </IsUNCHConnectedContext.Provider>
+                    </RoutesContext.Provider>
+                  </ModalSettingsContext.Provider>
+                </IsTA57ConnectedContext.Provider>
               </IsTransferingContext.Provider>
             </TlgKeyContext.Provider>
           </AntennaContext.Provider>

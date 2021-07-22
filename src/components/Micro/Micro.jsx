@@ -1,5 +1,9 @@
 import React, { useContext } from "react";
-import { MicroContext } from "../../App";
+import {
+  IsUNCHConnectedContext,
+  MicroContext,
+  ModalSettingsContext,
+} from "../../App";
 
 import MicroImg from "../../assets/images/micro.png";
 
@@ -7,9 +11,39 @@ import "./Micro.css";
 
 const Micro = () => {
   const { micro, setMicro } = useContext(MicroContext);
+  const { isUNCHConnected, setIsUNCHConnected } = useContext(
+    IsUNCHConnectedContext
+  );
+  const { setModalSettings } = useContext(ModalSettingsContext);
+
+  const microClickHandler = () => {
+    setMicro(true);
+    setModalSettings({ isVisible: false });
+  };
+
+  const unchClickHandler = () => {
+    setIsUNCHConnected(true);
+    setModalSettings({ isVisible: false });
+  };
 
   const clickHandler = () => {
-    setMicro(!micro);
+    if (micro) {
+      setMicro(false);
+    } else if (isUNCHConnected) {
+      setIsUNCHConnected(false);
+    } else {
+      setModalSettings({
+        isVisible: true,
+        title: "Выберите действие",
+        actions: [
+          {
+            onClick: microClickHandler,
+            title: "Подключить микротелефонную гарнитуру",
+          },
+          { onClick: unchClickHandler, title: "Подключить блок УНЧ" },
+        ],
+      });
+    }
   };
 
   return (

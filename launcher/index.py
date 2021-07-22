@@ -15,7 +15,7 @@ if len(get_address_path_arr) != 0:
 pipe = os.popen('node ' + get_address_path)
 address = pipe.readline()
 address_text = 'IP - адрес:' + (' ' * 4) + address
-server_path_arr = list(Path("..").rglob('startServer.bat'))
+server_path_arr = list(Path(".").rglob('startServer.bat'))
 
 if len(get_address_path_arr) == 0:
     address_text = 'Адрес не найден'

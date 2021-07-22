@@ -7,13 +7,13 @@ import { Spinner } from "./components/spiner/spiner";
 import { Button } from "./components/button/button";
 import { TranseferTypeSwitch } from "./components/transeferTypeSwitch/transeferTypeSwitch";
 import PowerMetr from "./components/PowerMetr/PowerMetr";
-import PowerSwitch from "./components/PowerSwitch/PowerSwitch";
 import Micro from "./components/Micro/Micro";
 import Antenna from "./components/Antenna/Antenna";
 import TlgKlemmKey from "./components/TlgKlemmKey/TlgKlemmKey";
 import TA57 from "./components/TA57/TA57";
 import UNCH from "./components/UNCH/UNCH";
 import Modal from "./components/Modal/Modal";
+import Switch from "./components/Switch/Switch";
 
 let socket =
   process.env.NODE_ENV === "production"
@@ -294,6 +294,10 @@ function App() {
 
   const stopPropagation = (e) => e.stopPropagation();
 
+  const p159PowerHandler = () => {
+    setPower(power === PowerType.off ? PowerType.on : PowerType.off);
+  };
+
   let component = null;
   switch (route) {
     case RoutesType.P159:
@@ -332,7 +336,11 @@ function App() {
               />
             </div>
             <PowerMetr />
-            <PowerSwitch />
+            <Switch
+              onClick={p159PowerHandler}
+              isOn={power === PowerType.on}
+              imgClassName="turned-switch"
+            />
             <Micro />
             <Antenna />
             <TlgKlemmKey

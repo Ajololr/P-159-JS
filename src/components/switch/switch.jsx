@@ -1,23 +1,23 @@
-import * as React from "react";
+import React from "react";
 
-import "./switch.css";
+import TurnedOnImage from "../../assets/images/turned-on.png";
+import TurnedOffImage from "../../assets/images/turned-off.png";
 
-import activeImg from "./active.png";
-import inactiveImg from "./inactive.png";
+import TurnedOnUNCHImage from "../../assets/images/switch-unch-on.jpg";
+import TurnedOffUNCHImage from "../../assets/images/switch-unch-off.jpg";
 
-export const Switch = ({ onChange }) => {
-  const [active, setActive] = React.useState(false);
-
-  const onClickHandler = () => {
-    setActive(!active);
-    onChange(!active);
-  };
+function Switch({ onClick, isUNCH, isOn, imgClassName }) {
+  const on = isUNCH ? TurnedOnUNCHImage : TurnedOnImage;
+  const off = isUNCH ? TurnedOffUNCHImage : TurnedOffImage;
 
   return (
     <img
-      onClick={onClickHandler}
-      className={`switch`}
-      src={active ? activeImg : inactiveImg}
+      alt=""
+      onClick={onClick}
+      src={isOn ? on : off}
+      className={imgClassName}
     />
   );
-};
+}
+
+export default Switch;

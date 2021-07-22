@@ -53,6 +53,12 @@ const Micro = () => {
         <div className="micro-short" />
         <div className="micro-long" />
       </div>
+      <div
+        className={`unch-block ${isUNCHConnected ? "unch-block__visible" : ""}`}
+      >
+        <div className="unch-short" />
+        <div className="unch-long" />
+      </div>
     </div>
   );
 };

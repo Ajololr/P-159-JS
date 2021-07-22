@@ -3,7 +3,7 @@ import { connect } from "socket.io-client";
 
 import "./App.css";
 
-import { Spinner } from "./components/spiner/spiner";
+import { Spinner } from "./components/Spinner/Spinner";
 import { Button } from "./components/button/button";
 import { TranseferTypeSwitch } from "./components/transeferTypeSwitch/transeferTypeSwitch";
 import PowerMetr from "./components/PowerMetr/PowerMetr";

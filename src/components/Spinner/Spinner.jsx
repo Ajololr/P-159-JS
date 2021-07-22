@@ -1,11 +1,13 @@
 import * as React from "react";
 
-import "./spinner.css";
+import "./Spinner.css";
 
 import FullImg from "./full.png";
 import PartImg from "./part.png";
 
-export const Spinner = ({ min, max, onChange }) => {
+import SoundSpinnerImg from "../../assets/images/sound-switch.png";
+
+export const Spinner = ({ min, max, onChange, isSound }) => {
   const [number, setNumber] = React.useState(min);
 
   const onClickHandler = () => {
@@ -19,13 +21,15 @@ export const Spinner = ({ min, max, onChange }) => {
     }
   };
 
+  let image = isSound ? SoundSpinnerImg : min === 3 ? PartImg : FullImg;
+
   return (
     <img
       alt=""
       onClick={onClickHandler}
       className={`spinner`}
       style={{ transform: `rotate(${number * (360 / 12)}deg)` }}
-      src={min === 3 ? PartImg : FullImg}
+      src={image}
     />
   );
 };

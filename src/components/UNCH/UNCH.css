@@ -5,17 +5,46 @@
   justify-content: center;
   align-items: center;
   overflow-x: hidden;
-  background-color: #a4abac;
+  background-color: #c5c5c5;
 }
 
 .unch-background {
+  margin: 0 20px;
   position: relative;
   width: 100vmax;
-  height: 29.5vmax;
-  background-image: url("../../assets/images/unch-background.jpg");
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
+  height: 30vmax;
+  background-color: #9e9492;
+  border-radius: 10px;
+}
+
+.unch-closed-pin {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: gray;
+  width: 8vmax;
+  height: 8vmax;
+  box-shadow: inset 0px 0px 10px 0px;
+}
+
+.unch-closed-pin-small {
+  border-radius: 50%;
+  background-color: darkgray;
+  width: 2vmax;
+  height: 2vmax;
+}
+
+.first-pin {
+  position: absolute;
+  top: 10%;
+  left: 5%;
+}
+
+.second-pin {
+  position: absolute;
+  top: 50%;
+  left: 45%;
 }
 
 .unch-power-switch {
@@ -34,4 +63,268 @@
   width: 8%;
   height: auto;
   cursor: pointer;
+}
+
+.unch-sound-spinner {
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  width: 8%;
+  cursor: pointer;
+}
+
+.filter-switch {
+  position: absolute;
+  top: 10%;
+  left: 19%;
+}
+
+.unch-switch-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #c3bfb4;
+  width: 7vmax;
+  height: 10vmax;
+  border-radius: 6px;
+  box-shadow: 0px 0px 4px 0px;
+  cursor: pointer;
+}
+
+.unch-switch-pin {
+  position: absolute;
+  width: 1.5vmax;
+  height: 1.5vmax;
+  border-radius: 50%;
+  background-color: gray;
+}
+
+.switch-top {
+  top: 5%;
+}
+
+.switch-left {
+  left: 5%;
+}
+
+.switch-bottom {
+  bottom: 5%;
+}
+
+.switch-right {
+  right: 5%;
+}
+
+.unch-sitch-foundation {
+  display: flex;
+  justify-content: center;
+  width: 5vmax;
+  height: 5vmax;
+  border-radius: 50%;
+  background-color: #4e4e96;
+  box-shadow: inset 0px 0px 4px 0px;
+}
+
+.unch-sitch-handle {
+  position: relative;
+  top: 35%;
+  height: 80%;
+  width: 40%;
+  background-color: #4e4e96;
+  box-shadow: inset 0px 0px 4px 0px;
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
+}
+
+.handle-block {
+  width: 100%;
+  height: 20%;
+  background: #4e4e96;
+}
+
+.unch-power-foundation {
+  position: absolute;
+  top: 60%;
+  left: 18%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: silver;
+  width: 8vmax;
+  height: 8vmax;
+  border-radius: 6px;
+  box-shadow: 0px 0px 4px 0px;
+  cursor: pointer;
+}
+
+.unch-power-input {
+  box-sizing: border-box;
+  border: 2px solid gray;
+  background-color: black;
+  width: 5vmax;
+  height: 5vmax;
+  border-radius: 50%;
+}
+
+.unch-sound-container {
+  position: absolute;
+  top: 50%;
+  left: 60%;
+  border-radius: 50%;
+  background: #4e4e96;
+  width: 8vmax;
+  height: 8vmax;
+  box-shadow: 0px 0px 4px 0px;
+}
+
+.unch-sound-line {
+  position: absolute;
+  height: 50%;
+  width: 20%;
+  background: #6565be;
+  left: 40%;
+  top: 50%;
+  transform-origin: top;
+}
+
+.sound-line-left {
+  transform: rotate(-135deg);
+}
+
+.sound-line-right {
+  transform: rotate(135deg);
+}
+
+.small-pin {
+  position: absolute;
+  box-sizing: border-box;
+  width: 3vmax;
+  height: 3vmax;
+  border-radius: 50%;
+  background-color: rgb(204, 186, 87);
+  border: 0.3vmax solid #4e4e96;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.small-pin-inner {
+  width: 1vmax;
+  height: 1vmax;
+  border-radius: 50%;
+  background-color: black;
+}
+
+.small-pin-inner-line {
+  position: absolute;
+  width: 0.3vmax;
+  height: 101%;
+  background-color: black;
+}
+
+.small-pin-out {
+  top: 30%;
+  left: 65%;
+}
+
+.small-pin-unch {
+  top: 30%;
+  left: 70%;
+}
+
+.interface-input-container {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(204, 186, 87);
+  width: 10vmax;
+  height: 10vmax;
+  border-radius: 6px;
+  box-shadow: 0px 0px 4px 0px;
+  cursor: pointer;
+}
+
+.input-station {
+  top: 10%;
+  right: 5%;
+}
+
+.interface-input-socket {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  background-color: rgb(204, 110, 87);
+  width: 8vmax;
+  height: 8vmax;
+  border-radius: 50%;
+  border: 0.5vmax solid rgb(241, 221, 103);
+}
+
+.interface-input-hole {
+  width: 2vmax;
+  height: 2vmax;
+  border-radius: 50%;
+  background-color: black;
+}
+
+.interface-input-hole-small {
+  position: absolute;
+  width: 1vmax;
+  height: 1vmax;
+  border-radius: 50%;
+  background-color: black;
+}
+
+.hole-top {
+  top: 20%;
+}
+
+.hole-left {
+  left: 20%;
+}
+
+.hole-bottom {
+  bottom: 20%;
+}
+
+.hole-right {
+  right: 20%;
+}
+
+.hole-center {
+  top: 10%;
+  left: 43%;
+}
+
+.small-switch-container {
+  position: absolute;
+  top: 50%;
+  right: 23%;
+  display: flex;
+  justify-content: center;
+  width: 5vmax;
+  height: 5vmax;
+  border-radius: 50%;
+  background-color: gray;
+  box-shadow: inset 0px 0px 4px 0px;
+}
+
+.small-switch-handle {
+  position: relative;
+  top: 35%;
+  height: 80%;
+  width: 30%;
+  background-color: gray;
+  box-shadow: inset 0px 0px 4px 0px;
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
+}
+
+.small-switch-handle-block {
+  width: 100%;
+  height: 25%;
+  background: gray;
 }

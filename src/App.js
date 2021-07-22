@@ -84,6 +84,8 @@ export const RoutesType = {
 
 export const RoutesContext = createContext();
 
+export const UnchSettingsContext = createContext();
+
 function App() {
   const [transferType, setTransferType] = useState(TransferType.tlf);
   const [power, setPower] = useState(PowerType.off);
@@ -100,6 +102,10 @@ function App() {
     title: "",
     actions: [],
     isVisible: false,
+  });
+  const [unchSettings, setUnchSettings] = useState({
+    isPowerOn: false,
+    isFilterOn: false,
   });
   const [route, setRoute] = useState(RoutesType.P159);
 
@@ -396,40 +402,44 @@ function App() {
                       <IsUNCHConnectedContext.Provider
                         value={{ isUNCHConnected, setIsUNCHConnected }}
                       >
-                        {component}
-                        {isTa57Connected && (
-                          <button
-                            className="switch-ta-57-view-button"
-                            onClick={() =>
-                              setRoute(
-                                route !== RoutesType.TA57
-                                  ? RoutesType.TA57
-                                  : RoutesType.P159
-                              )
-                            }
-                          >
-                            {route !== RoutesType.TA57
-                              ? "Перейти к ТА-57"
-                              : "Перейти к Р-159"}
-                          </button>
-                        )}
-                        {isUNCHConnected && (
-                          <button
-                            className="switch-unhc-view-button"
-                            onClick={() =>
-                              setRoute(
-                                route !== RoutesType.UNCH
-                                  ? RoutesType.UNCH
-                                  : RoutesType.P159
-                              )
-                            }
-                          >
-                            {route !== RoutesType.UNCH
-                              ? "Перейти к УНЧ"
-                              : "Перейти к Р-159"}
-                          </button>
-                        )}
-                        <Modal />
+                        <UnchSettingsContext.Provider
+                          value={{ unchSettings, setUnchSettings }}
+                        >
+                          {component}
+                          {isTa57Connected && (
+                            <button
+                              className="switch-ta-57-view-button"
+                              onClick={() =>
+                                setRoute(
+                                  route !== RoutesType.TA57
+                                    ? RoutesType.TA57
+                                    : RoutesType.P159
+                                )
+                              }
+                            >
+                              {route !== RoutesType.TA57
+                                ? "Перейти к ТА-57"
+                                : "Перейти к Р-159"}
+                            </button>
+                          )}
+                          {isUNCHConnected && (
+                            <button
+                              className="switch-unhc-view-button"
+                              onClick={() =>
+                                setRoute(
+                                  route !== RoutesType.UNCH
+                                    ? RoutesType.UNCH
+                                    : RoutesType.P159
+                                )
+                              }
+                            >
+                              {route !== RoutesType.UNCH
+                                ? "Перейти к УНЧ"
+                                : "Перейти к Р-159"}
+                            </button>
+                          )}
+                          <Modal />
+                        </UnchSettingsContext.Provider>
                       </IsUNCHConnectedContext.Provider>
                     </RoutesContext.Provider>
                   </ModalSettingsContext.Provider>

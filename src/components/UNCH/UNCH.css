@@ -17,3 +17,21 @@
   background-repeat: no-repeat;
   background-position: center;
 }
+
+.unch-power-switch {
+  position: absolute;
+  bottom: 8%;
+  left: 8%;
+  width: 8%;
+  height: auto;
+  cursor: pointer;
+}
+
+.unch-filter-switch {
+  position: absolute;
+  top: 18%;
+  left: 23%;
+  width: 8%;
+  height: auto;
+  cursor: pointer;
+}

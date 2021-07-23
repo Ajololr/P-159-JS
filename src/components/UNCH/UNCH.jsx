@@ -3,7 +3,7 @@ import { IsUNCHConnectedContext, UnchSettingsContext } from "../../App";
 
 import "./UNCH.css";
 
-const UnchType = {
+export const UnchType = {
   UNCH: "unch",
   TLF: "tlf",
 };
@@ -106,8 +106,12 @@ function UNCH() {
         soundEl.current.offsetTop +
         soundEl.current.offsetParent.offsetTop +
         soundEl.current.clientHeight / 2;
-      let mouse_x = evt.pageX || evt.changedTouches[0].pageX;
-      let mouse_y = evt.pageY || evt.changedTouches[0].pageY;
+      let mouse_x =
+        evt.pageX ||
+        (evt.changedTouches ? evt.changedTouches[0].pageX : undefined);
+      let mouse_y =
+        evt.pageY ||
+        (evt.changedTouches ? evt.changedTouches[0].pageY : undefined);
       let radians = Math.atan2(mouse_x - center_x, mouse_y - center_y);
       let degree = radians * (180 / Math.PI) * -1 + 90;
 
@@ -119,7 +123,7 @@ function UNCH() {
         }
 
         if (counter.current > 0 && counter.current < 300) {
-          handleVolumeLevelChange(Math.round(Math.abs(counter.current / 30)));
+          handleVolumeLevelChange(Math.abs(counter.current / 300));
           const style = `
           -moz-transform: rotate(${degree}deg);
           -webkit-transform: rotate(${degree}deg);

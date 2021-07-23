@@ -11,7 +11,7 @@ import Micro from "./components/Micro/Micro";
 import Antenna from "./components/Antenna/Antenna";
 import TlgKlemmKey from "./components/TlgKlemmKey/TlgKlemmKey";
 import TA57 from "./components/TA57/TA57";
-import UNCH from "./components/UNCH/UNCH";
+import UNCH, { UnchType } from "./components/UNCH/UNCH";
 import Modal from "./components/Modal/Modal";
 import Switch from "./components/Switch/Switch";
 
@@ -106,6 +106,10 @@ function App() {
   const [unchSettings, setUnchSettings] = useState({
     isPowerOn: false,
     isFilterOn: false,
+    volumeLevel: 0.5,
+    unchType: UnchType.TLF,
+    isMtgConnected: false,
+    isTurnedOn: false,
   });
   const [route, setRoute] = useState(RoutesType.P159);
 
@@ -136,40 +140,61 @@ function App() {
     init();
   });
 
+  const unchSettingsCorrect = () =>
+    unchSettings.isMtgConnected &&
+    unchSettings.isPowerOn &&
+    unchSettings.isTurnedOn;
+
+  const canProcessStream = (stream) =>
+    !isBroadcasting.current &&
+    power === PowerType.on &&
+    antenna &&
+    stream.frequency === workingFreq;
+
+  const canUseTlf = () =>
+    transferType === TransferType.tlf ||
+    transferType === TransferType.tlfPh ||
+    (transferType === TransferType.du && isTa57Connected);
+
+  const canProcessSound = (stream) =>
+    !stream.beep &&
+    (isUNCHConnected
+      ? unchSettingsCorrect() && canUseTlf()
+      : canUseTlf() && micro);
+
+  const canUseTlg = (stream) =>
+    stream.beep &&
+    transferType === TransferType.tlg &&
+    (isUNCHConnected ? unchSettingsCorrect() : micro);
+
   const onStreamHandler = async (stream) => {
-    if (!isBroadcasting.current && power === PowerType.on && antenna && micro) {
-      if (stream.frequency === workingFreq)
-        try {
-          if (stream.beep && transferType === TransferType.tlg) {
-            if (!isBeep.current) {
-              beep.current.currentTime = 0.2;
-              await beep.current.play();
-              isBeep.current = true;
-            } else {
-              if (beep.current.currentTime > 595)
-                beep.current.currentTime = 0.2;
-            }
-          } else if (isBeep.current) {
+    if (canProcessStream(stream)) {
+      try {
+        if (canUseTlg(stream)) {
+          if (!isBeep.current) {
+            beep.current.currentTime = 0.2;
+            await beep.current.play();
+            isBeep.current = true;
+          } else {
+            if (beep.current.currentTime > 595) beep.current.currentTime = 0.2;
+          }
+        } else if (isBeep.current) {
+          stopBeep();
+        }
+        if (canProcessSound(stream)) {
+          if (isBeep.current) {
             stopBeep();
-          }
-          if (
-            !stream.beep &&
-            (transferType === TransferType.tlf ||
-              transferType === TransferType.tlfPh ||
-              (transferType === TransferType.du && isTa57Connected))
-          ) {
-            if (isBeep.current) {
-              stopBeep();
-            } else {
-              if (!isBroadcasting.current) {
-                const audioBlob = new Blob(Array(stream.audioChunks));
-                const audioUrl = URL.createObjectURL(audioBlob);
-                const audio = new Audio(audioUrl);
-                await audio.play();
-              }
+          } else {
+            if (!isBroadcasting.current) {
+              const audioBlob = new Blob(Array(stream.audioChunks));
+              const audioUrl = URL.createObjectURL(audioBlob);
+              const audio = new Audio(audioUrl);
+              audio.volume = unchSettings.volumeLevel;
+              await audio.play();
             }
           }
-        } catch {}
+        }
+      } catch {}
     }
   };
 
@@ -187,7 +212,11 @@ function App() {
   };
 
   const broadcastingHandler = () => {
-    if (antenna && micro && power === PowerType.on) {
+    if (
+      (isUNCHConnected ? unchSettingsCorrect() : micro) &&
+      antenna &&
+      power === PowerType.on
+    ) {
       if (isBeep.current) stopBeep();
       isBroadcasting.current = true;
       setIsTransfering(true);
@@ -344,7 +373,7 @@ function App() {
             <PowerMetr />
             <Switch
               onClick={p159PowerHandler}
-              isOn={power === PowerType.on}
+              isOn={power !== PowerType.off}
               imgClassName="turned-switch"
             />
             <Micro />

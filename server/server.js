@@ -10,7 +10,7 @@ const options = {
 const server = https.createServer(options, app);
 const io = require("socket.io")(server);
 
-const port = 2000;
+const port = 22957;
 
 app.use(express.static(path.join(__dirname, "../build")));
 

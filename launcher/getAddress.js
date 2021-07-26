@@ -9,8 +9,11 @@ for (const name of Object.keys(nets)) {
         name.includes("Wireless network") ||
         name === "Ethernet" ||
         name.includes("Wi-Fi")
-      )
-        console.log(`https://${net.address}:2000`);
+      ) {
+        console.log(`https://${net.address}:22957`);
+      } else {
+        console.log(`https://localhost:22957`);
+      }
     }
   }
 }

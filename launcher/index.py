@@ -27,7 +27,7 @@ window.resizable(width=False, height=False)
 window.pack_propagate(False)
 window.grid_propagate(False)
 
-icon_path_arr = list(Path(".").rglob('radio-station.png'))
+icon_path_arr = list(Path(".").rglob('icon.png'))
 if len(icon_path_arr) != 0:
     icon = PhotoImage(file=icon_path_arr[0])
     window.iconphoto(False, icon)

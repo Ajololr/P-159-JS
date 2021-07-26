@@ -16,7 +16,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "create-exe": "pyinstaller --onefile --icon=launcher\\img\\icon.ico -n=P-159 --distpath / launcher\\index.py"
   },
   "eslintConfig": {
     "extends": [
